@@ -1,11 +1,8 @@
 package com.gokay.gokay_week3;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,59 +13,31 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class PostActivity extends AppCompatActivity {
+
     ImageView img;
+    TextView txtMsg;
     ImageButton btnOk;
     ImageButton btnCancel;
-    EditText txtMsg;
-
+    static final int CAPTURE_IMAGE=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post);
+        setContentView(R.layout.activity_post2);
 
-        final ActivityResultLauncher<Intent> launcher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if(result.getResultCode() == Activity.RESULT_OK){
-                            Bundle bundle = result.getData().getExtras();
-                            Bitmap image = (Bitmap) bundle.get("data");
-                            img.setImageBitmap(image);
-
-
-                        }
-                    }
-
-                });
         img = (ImageView) findViewById(R.id.imageView);
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (intent.resolveActivity(getPackageManager()) != null){
-                    launcher.launch(intent);
-
-
+                    startActivityForResult(intent, CAPTURE_IMAGE);
                 }
             }
-
         });
-
-        txtMsg = (EditText)findViewById(R.id.txtMessage);
-        btnCancel = (ImageButton) findViewById(R.id.btnCancel);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setResult(Activity.RESULT_CANCELED);
-                finish();
-
-            }
-        });
-
         txtMsg = (EditText)findViewById(R.id.txtMessage);
         btnOk = (ImageButton) findViewById(R.id.btnOk);
         btnOk.setOnClickListener(new View.OnClickListener() {
@@ -83,14 +52,27 @@ public class PostActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
-
+        btnCancel = (ImageButton) findViewById(R.id.btnCancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setResult(Activity.RESULT_CANCELED);
+                finish();
+            }
+        });
 
 
 
     }
-
+    @SuppressLint("MissingSuperCall")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAPTURE_IMAGE && resultCode == Activity.RESULT_OK){
+            Bundle bundle = data.getExtras();
+            Bitmap image = (Bitmap) bundle.get("data");
+            img.setImageBitmap(image);
+        }
+    }
 
 
 }

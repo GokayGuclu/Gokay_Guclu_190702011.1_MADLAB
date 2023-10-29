@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <EditText
@@ -12,18 +11,20 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name" />
+        android:hint="Message"
+        />
 
     <TextView
         android:id="@+id/txtLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
-
+        android:text="Location"
+        android:textSize="20sp" />
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="481dp"
-        app:srcCompat="@android:drawable/presence_video_away" />
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        app:srcCompat="@android:drawable/presence_video_away"/>
 
 </LinearLayout>

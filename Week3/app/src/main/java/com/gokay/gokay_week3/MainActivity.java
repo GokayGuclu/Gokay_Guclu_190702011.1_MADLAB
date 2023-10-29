@@ -1,12 +1,9 @@
 package com.gokay.gokay_week3;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,52 +17,39 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    List<Post> posts = new ArrayList<>();
-    ListView listview;
-
-
-
-
+    ListView listView;
+    Button btnPost;
+    static final int POST_REQUEST=3;
+    List<Post> postList = new ArrayList<Post>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        listView=findViewById(R.id.listView);
 
-        ListView listView = (ListView) findViewById(R.id.listView);
-        PostAdapter adapter = new PostAdapter(this, posts);
-        listView.setAdapter(adapter);
+        PostAdapter postAdapter = new PostAdapter(this,postList);
+        listView.setAdapter(postAdapter);
 
-        final ActivityResultLauncher<Intent> launcher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if(result.getResultCode()== Activity.RESULT_OK){
-                            Intent data = result.getData();
-                            Post post = new Post();
-                            post.setMessage(data.getCharSequenceExtra("msg").toString());
-                            post.setImage((Bitmap) data.getParcelableExtra("bitmap"));
-                            posts.add(post);
-                            ((PostAdapter) listView.getAdapter()).notifyDataSetChanged();
-
-                        }
-                    }
-
-
-                });
-
-        Button btnPost = findViewById(R.id.btnPost);
-        btnPost.setOnClickListener(new View.OnClickListener(){
-                                       @Override
-                                       public void onClick(View view) {
-                                           Intent intent = new Intent(MainActivity.this, PostActivity.class);
-                                           launcher.launch(intent);
-                                       }
-                                   }
-
-        );
-
+        btnPost = (Button) findViewById(R.id.btnPost);
+        btnPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, PostActivity.class);
+                startActivityForResult(intent, POST_REQUEST);
+            }
+        });
 
     }
+    @SuppressLint("MissingSuperCall")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == POST_REQUEST && resultCode == Activity.RESULT_OK){
+            Post post = new Post();
+            post.setMessage(data.getCharSequenceExtra("msg").toString());
+            post.setImage((Bitmap) data.getParcelableExtra("bitmap"));
+            postList.add(post);
+            ((PostAdapter) listView.getAdapter()).notifyDataSetChanged();
+        }
+    }
+
 }
